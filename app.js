@@ -54,7 +54,6 @@ app.get("/api", function(req, res) {
     if (err) {
       return res.json(err);
     }
-    //
     res.send({ contact: contacts });
   });
 });
@@ -64,7 +63,6 @@ app.post("/api", function(req, res) {
     if (err) {
       return console.log(err);
     } else {
-      console.log(req.body);
     }
   });
 });
