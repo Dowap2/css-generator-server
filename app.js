@@ -4,7 +4,14 @@ var bodyParser = require("body-parser");
 var app = express();
 var cors = require("cors");
 
-mongoose.connect("mongodb://localhost/box", { useNewUrlParser: true });
+mongoose
+  .connect("mongodb://localhost:8000/box", { useNewUrlParser: true })
+  .then(() => {
+    console.log("Connected to Database");
+  })
+  .catch(err => {
+    console.log("Not Connected to Database ERROR! ", err);
+  });
 var db = mongoose.connection;
 
 db.once("open", function() {
@@ -40,7 +47,8 @@ var boxSchema = mongoose.Schema({
   text: { type: String },
   textColor: { type: String },
   textStyle: { type: String },
-  fontSize: { type: Number }
+  fontSize: { type: Number },
+  versionKey: false
 });
 
 var Box = mongoose.model("box", boxSchema);
@@ -50,30 +58,16 @@ app.get("/api", function(req, res) {
     if (err) {
       return res.json(err);
     }
-    console.log(1);
-    res.send({ box: box });
+    res.send({ box });
   });
 });
 
 app.post("/api", function(req, res) {
-  Box.create(req.body, function(err) {
-    if (err) {
-      return console.log(err);
-    } else {
-      console.log(req.body);
-    }
-  });
+  Box.create({ state: req.body }),
+    function(err) {
+      if (err) console.log(err);
+    };
 });
-
-// app.delete("/api", function(req, res) {
-//   Contact.deleteOne({ _id: req.body.id }, function(err) {
-//     if (err) {
-//       return console.log("error");
-//     } else {
-//       console.log(req);
-//     }
-//   });
-// });
 
 var port = 8000;
 
