@@ -5,7 +5,10 @@ var app = express();
 var cors = require("cors");
 
 mongoose
-  .connect("mongodb://localhost:8000/box", { useNewUrlParser: true })
+  .connect(
+    "mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb",
+    { useNewUrlParser: true }
+  )
   .then(() => {
     console.log("Connected to Database");
   })
