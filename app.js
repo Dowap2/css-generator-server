@@ -5,10 +5,7 @@ var app = express();
 var cors = require("cors");
 
 mongoose
-  .connect(
-    "mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb",
-    { useNewUrlParser: true }
-  )
+  .connect("mongodb://127.0.0.1:27017", { useNewUrlParser: true })
   .then(() => {
     console.log("Connected to Database");
   })
@@ -58,6 +55,7 @@ var Box = mongoose.model("box", boxSchema);
 
 app.get("/api", function(req, res) {
   Box.find({}, function(err, box) {
+    console.log(box);
     if (err) {
       return res.json(err);
     }
