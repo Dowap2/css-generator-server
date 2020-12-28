@@ -5,7 +5,7 @@ var app = express();
 var cors = require("cors");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017", { useNewUrlParser: true })
+  .connect("mongodb://127.0.0.1:27017/box", { useNewUrlParser: true })
   .then(() => {
     console.log("Connected to Database");
   })
@@ -27,35 +27,18 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var boxSchema = mongoose.Schema({
-  boxWidth: { type: Number },
-  boxHeight: { type: Number },
-  borderWidth: { type: Number },
-  borderStyle: { type: String },
-  borderColor: { type: String },
-  colorType: { type: String },
-  boxColor: { type: String },
-  color1: { type: String },
-  color2: { type: String },
-  gradientStyle: { type: String },
-  deg: { type: Number },
-  transformX: { type: Number },
-  transformY: { type: Number },
-  rotateX: { type: Number },
-  rotateY: { type: Number },
-  rotateZ: { type: Number },
-  text: { type: String },
-  textColor: { type: String },
-  textStyle: { type: String },
-  fontSize: { type: Number },
-  versionKey: false
-});
+var boxSchema = mongoose.Schema(
+  {
+    name: { type: String },
+    state: { type: Object }
+  },
+  { versionKey: false }
+);
 
-var Box = mongoose.model("box", boxSchema);
+var BoxState = mongoose.model("state", boxSchema);
 
 app.get("/api", function(req, res) {
-  Box.find({}, function(err, box) {
-    console.log(box);
+  BoxState.find({}, function(err, box) {
     if (err) {
       return res.json(err);
     }
@@ -64,10 +47,16 @@ app.get("/api", function(req, res) {
 });
 
 app.post("/api", function(req, res) {
-  Box.create({ state: req.body }),
+  BoxState.create({ state: req.body }),
     function(err) {
       if (err) console.log(err);
     };
+  console.log(req.body.state.boWidth);
+  let state = req.body.state;
+  let boxState = new BoxState({
+    state: state
+  });
+  boxState.save();
 });
 
 var port = 8000;
