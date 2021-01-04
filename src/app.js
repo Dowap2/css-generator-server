@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var app = express();
 var cors = require("cors");
+var db = mongoose.connection;
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/box", { useNewUrlParser: true })
@@ -12,7 +13,6 @@ mongoose
   .catch(err => {
     console.log("Not Connected to Database ERROR! ", err);
   });
-var db = mongoose.connection;
 
 db.once("open", function() {
   console.log("DB connected");
@@ -51,11 +51,9 @@ app.post("/api", function(req, res) {
     function(err) {
       if (err) console.log(err);
     };
-  console.log(req.body.state.boWidth);
-  let state = req.body.state;
-  let boxState = new BoxState({
-    state: state
-  });
+  const state = req.body.state;
+  const name = req.body.name;
+  const boxState = new BoxState({ name: name }, state);
   boxState.save();
 });
 
