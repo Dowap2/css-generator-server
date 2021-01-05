@@ -57,6 +57,10 @@ app.post("/api", function(req, res) {
   boxState.save();
 });
 
+app.post("/user", function(req, res) {
+  console.log(req);
+});
+
 var port = 8000;
 
 app.listen(port, function() {
