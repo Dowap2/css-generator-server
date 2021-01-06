@@ -27,7 +27,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var boxSchema = mongoose.Schema(
+let boxSchema = mongoose.Schema(
   {
     name: { type: String },
     state: { type: Object }
@@ -35,7 +35,13 @@ var boxSchema = mongoose.Schema(
   { versionKey: false }
 );
 
-var BoxState = mongoose.model("state", boxSchema);
+let userSchema = mongoose.Schema({
+  id: { type: String },
+  pw: { type: String }
+});
+
+let BoxState = mongoose.model("state", boxSchema);
+let UserState = mongoose.model("user", userSchema);
 
 app.get("/api", function(req, res) {
   BoxState.find({}, function(err, box) {
@@ -57,8 +63,25 @@ app.post("/api", function(req, res) {
   boxState.save();
 });
 
-app.post("/user", function(req, res) {
-  console.log(req);
+app.post("/user/signin", function(req, res) {
+  UserState.find({ id: req.body.id, pw: req.body.pw }, function(err, user) {
+    if (user[0] == null) {
+    } else {
+      res.send(user[0].id);
+    }
+  });
+});
+
+app.post("/user/signup", function(req) {
+  UserState.create({ id: req.body.id, pw: req.body.pw }, function(err) {
+    if (err) {
+      console.log(err);
+    }
+    const id = req.body.id;
+    const pw = req.body.pw;
+    const userInfo = new BoxState({ id: id, pw: pw });
+    userInfo.save();
+  });
 });
 
 var port = 8000;
