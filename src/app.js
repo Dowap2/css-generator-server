@@ -67,7 +67,7 @@ app.post("/user/signin", function(req, res) {
   UserState.find({ id: req.body.id, pw: req.body.pw }, function(err, user) {
     if (user[0] == null) {
     } else {
-      res.send(user[0].id);
+      res.send(user[0]);
     }
   });
 });
