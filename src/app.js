@@ -37,7 +37,8 @@ let boxSchema = mongoose.Schema(
 
 let userSchema = mongoose.Schema({
   id: { type: String },
-  pw: { type: String }
+  pw: { type: String },
+  name: { type: String }
 });
 
 let BoxState = mongoose.model("state", boxSchema);
@@ -73,15 +74,19 @@ app.post("/user/signin", function(req, res) {
 });
 
 app.post("/user/signup", function(req) {
-  UserState.create({ id: req.body.id, pw: req.body.pw }, function(err) {
-    if (err) {
-      console.log(err);
+  UserState.create(
+    { id: req.body.id, pw: req.body.pw, name: req.body.name },
+    function(err) {
+      if (err) {
+        console.log(err);
+      }
+      const id = req.body.id;
+      const pw = req.body.pw;
+      const name = req.body.name;
+      const userInfo = new userState({ id: id, pw: pw, name: name });
+      userInfo.save();
     }
-    const id = req.body.id;
-    const pw = req.body.pw;
-    const userInfo = new BoxState({ id: id, pw: pw });
-    userInfo.save();
-  });
+  );
 });
 
 var port = 8000;
