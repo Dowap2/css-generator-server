@@ -44,7 +44,7 @@ let userSchema = mongoose.Schema({
 let BoxState = mongoose.model("state", boxSchema);
 let UserState = mongoose.model("user", userSchema);
 
-app.get("/api", function(req, res) {
+app.get("/api/box", function(req, res) {
   BoxState.find({}, function(err, box) {
     if (err) {
       return res.json(err);
@@ -53,7 +53,7 @@ app.get("/api", function(req, res) {
   });
 });
 
-app.post("/api", function(req, res) {
+app.post("/api/box", function(req, res) {
   BoxState.create({ state: req.body }),
     function(err) {
       if (err) console.log(err);
@@ -64,16 +64,20 @@ app.post("/api", function(req, res) {
   boxState.save();
 });
 
-app.post("/user/signin", function(req, res) {
+app.post("/api/signin", function(req, res) {
+  console.log(req.body);
   UserState.find({ id: req.body.id, pw: req.body.pw }, function(err, user) {
-    if (user[0] == null) {
+    if (err) {
+      console.log(err);
     } else {
-      res.send(user[0]);
+      console.log(user);
+      res.send(user);
     }
   });
 });
 
-app.post("/user/signup", function(req) {
+app.post("/api/signup", function(req) {
+  console.log(req.body);
   UserState.create(
     { id: req.body.id, pw: req.body.pw, name: req.body.name },
     function(err) {
@@ -83,7 +87,7 @@ app.post("/user/signup", function(req) {
       const id = req.body.id;
       const pw = req.body.pw;
       const name = req.body.name;
-      const userInfo = new userState({ id: id, pw: pw, name: name });
+      const userInfo = new UserState({ id: id, pw: pw, name: name });
       userInfo.save();
     }
   );
